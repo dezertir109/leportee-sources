@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Portée Source Library</title>
+<meta name="description" content="The research, tools and books the Le Portée Scout has found for hoteliers, rated and searchable.">
+<style>
+:root{--bg:#faf8f4;--fg:#1d1b18;--mute:#6b665e;--line:#e4dfd5;--card:#fff;--accent:#8a5a2b;--chip:#f0eadf}
+@media (prefers-color-scheme:dark){:root{--bg:#161412;--fg:#ece7de;--mute:#9a948a;--line:#2e2a25;--card:#1e1b18;--accent:#d0a066;--chip:#2a2621}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 Georgia,'Times New Roman',serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.9rem;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 24px;font-family:system-ui,sans-serif;font-size:.95rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;font-family:system-ui,sans-serif}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+input{flex:1 1 220px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;font-family:system-ui,sans-serif}
+.chip{border:1px solid var(--line);background:var(--chip);color:var(--fg);padding:5px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:.85rem}
+.chip[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.count{color:var(--mute);font-family:system-ui,sans-serif;font-size:.85rem;margin-bottom:8px}
+ul{list-style:none;margin:0;padding:0}
+li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+li a{color:var(--fg);font-weight:600;text-decoration:none}
+li a:hover{color:var(--accent);text-decoration:underline}
+.meta{margin-top:4px;color:var(--mute);font-family:system-ui,sans-serif;font-size:.8rem;display:flex;flex-wrap:wrap;gap:4px 12px}
+.stars{color:var(--accent);letter-spacing:1px}
+.tag{background:var(--chip);border-radius:6px;padding:0 6px}
+.empty{color:var(--mute);padding:24px 0;font-family:system-ui,sans-serif}
+footer{margin-top:32px;color:var(--mute);font-family:system-ui,sans-serif;font-size:.8rem}
+footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>The Le Portée Source Library</h1>
+<p class="sub">Every paper, tool and book the Scout has found for hoteliers, rated 1 to 5 stars. Updated weekly.</p>
+<div class="bar">
+  <input id="q" type="search" placeholder="Search titles and publishers" aria-label="Search">
+  <select id="sort" aria-label="Sort">
+    <option value="stars">Highest rated</option>
+    <option value="week">Newest</option>
+    <option value="title">A to Z</option>
+  </select>
+</div>
+<div class="chips" id="kinds" role="group" aria-label="Type"></div>
+<div class="chips" id="states" role="group" aria-label="Status"></div>
+<div class="count" id="count"></div>
+<ul id="list"></ul>
+<div class="empty" id="empty" hidden>Nothing matches. Try fewer filters.</div>
+<footer>Ratings are the Le Portée Scout's. <span id="updated"></span> <a href="https://www.leportee.com">Subscribe to Le Portée</a></footer>
+</main>
+<script>
+const KINDS={academia:"Academia",tips:"Tips & tools",readable:"Readables"};
+const STATES={"in an issue":"In an issue","next-issue candidate":"Up next"};
+const state={q:"",sort:"stars",kind:new Set(),status:new Set()};
+let items=[];
+const $=id=>document.getElementById(id);
+function chips(el,map,set){
+  el.innerHTML="";
+  for(const [k,label] of Object.entries(map)){
+    const b=document.createElement("button");
+    b.className="chip";b.textContent=label;b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{set.has(k)?set.delete(k):set.add(k);b.setAttribute("aria-pressed",set.has(k));render()};
+    el.appendChild(b);
+  }
+}
+function render(){
+  const q=state.q.toLowerCase();
+  let rows=items.filter(i=>
+    (!state.kind.size||state.kind.has(i.kind))&&
+    (!state.status.size||state.status.has(i.status))&&
+    (!q||(i.title+" "+i.publisher).toLowerCase().includes(q)));
+  const by={stars:(a,b)=>(b.stars||0)-(a.stars||0)||(b.week||"").localeCompare(a.week||""),
+            week:(a,b)=>(b.week||"").localeCompare(a.week||""),
+            title:(a,b)=>a.title.localeCompare(b.title)};
+  rows.sort(by[state.sort]);
+  const ul=$("list");ul.innerHTML="";
+  for(const i of rows){
+    const li=document.createElement("li");
+    const a=document.createElement("a");a.textContent=i.title;
+    if(/^https?:\/\//.test(i.url||"")){a.href=i.url;a.rel="noopener noreferrer";a.target="_blank"}
+    li.appendChild(a);
+    const m=document.createElement("div");m.className="meta";
+    const add=(t,c)=>{const s=document.createElement("span");s.textContent=t;if(c)s.className=c;m.appendChild(s)};
+    add(KINDS[i.kind]||i.kind,"tag");
+    if(i.publisher)add(i.publisher);
+    if(i.stars)add("★".repeat(i.stars)+"☆".repeat(5-i.stars),"stars");
+    if(i.week)add(i.week);
+    if(i.status==="next-issue candidate")add("up next","tag");
+    li.appendChild(m);ul.appendChild(li);
+  }
+  $("count").textContent=rows.length+" of "+items.length+" sources";
+  $("empty").hidden=rows.length>0;
+}
+$("q").oninput=e=>{state.q=e.target.value;render()};
+$("sort").onchange=e=>{state.sort=e.target.value;render()};
+chips($("kinds"),KINDS,state.kind);chips($("states"),STATES,state.status);
+fetch("sources.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{
+  items=d.items;$("updated").textContent="Last updated "+d.updated+".";render();
+}).catch(()=>{$("count").textContent="Could not load the data.";});
+</script>
+</body>
+</html>
