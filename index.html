@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Le Portée Source Library</title>
-<meta name="description" content="The research, tools and books the Le Portée Scout has found for hoteliers, rated and sorted by theme.">
+<meta name="description" content="Hospitality research, industry reports, tools and books found by the Le Portée Scout for hoteliers and students: rated, sorted by theme, free-to-read links and citations.">
 <style>
 @font-face{font-family:"Archivo Black";src:url(fonts/ArchivoBlack-Regular.ttf) format("truetype");font-display:swap}
 @font-face{font-family:"Poppins";font-weight:600;src:url(fonts/Poppins-SemiBold.ttf) format("truetype");font-display:swap}
 :root{--paper:#f7f4ed;--card:#fffdf9;--ink:#262422;--mute:#6b665e;--rule:#d9d2c3;
   --orange:#E2482E;--orange-ink:#b93219;--blush:#fceae8;--on-orange:#fff;
-  --academia:#2f5d50;--tips:#E2482E;--readable:#a4671e;
+  --academia:#2f5d50;--reports:#355a8a;--tips:#E2482E;--readable:#a4671e;
   --display:"Archivo Black","Arial Black",Impact,sans-serif;--head:"Poppins",system-ui,sans-serif;
   --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--grain:.5}
 @media (prefers-color-scheme:dark){:root{--paper:#1b1917;--card:#252220;--ink:#efe9e2;--mute:#a39a90;--rule:#3a3531;
-  --orange:#f2694f;--orange-ink:#ff8f79;--blush:#3a1f1b;--academia:#7fb8a4;--tips:#f2694f;--readable:#d29a4b;--grain:.08}}
+  --orange:#f2694f;--orange-ink:#ff8f79;--blush:#3a1f1b;--academia:#7fb8a4;--reports:#8fb0e0;--tips:#f2694f;--readable:#d29a4b;--grain:.08}}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--body);
@@ -28,7 +28,7 @@ a{color:inherit}
 .kicker{font:600 .72rem var(--head);letter-spacing:.3em;text-transform:uppercase;color:var(--mute);margin:0 0 14px}
 h1{font:400 clamp(2.1rem,6.2vw,4rem)/1.04 var(--display);margin:0 0 20px;letter-spacing:-.01em;max-width:16ch}
 h1 mark{background:var(--blush);color:var(--orange-ink);padding:0 .18em;border-radius:.16em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-.sub{color:var(--mute);margin:0 0 40px;max-width:58ch;font-size:1.02rem}
+.sub{color:var(--mute);margin:0 0 40px;max-width:60ch;font-size:1.02rem}
 .sub a{color:var(--orange-ink);font-weight:600}
 h2{font:400 .95rem var(--display);letter-spacing:.14em;text-transform:uppercase;margin:0 0 14px;display:flex;align-items:center;gap:12px}
 h2::after{content:"";flex:1;border-top:2px dotted var(--rule)}
@@ -38,7 +38,7 @@ section{margin-bottom:44px}
 .card{background:var(--blush);border:2px dashed color-mix(in srgb,var(--orange) 55%,transparent);border-radius:6px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;transition:transform .2s}
 .card:nth-child(odd){transform:rotate(-.9deg)}.card:nth-child(even){transform:rotate(.7deg)}
 .card:hover{transform:rotate(0) translateY(-3px)}
-.card .row1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.row1{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .card a{font:600 1rem/1.3 var(--head);text-decoration:none}
 .card a:hover{color:var(--orange-ink);text-decoration:underline;text-decoration-thickness:2px}
 /* themes: tile mosaic */
@@ -50,43 +50,56 @@ section{margin-bottom:44px}
 .tile[aria-pressed=true] .n{color:var(--on-orange)}
 /* controls */
 .ctl{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-input,select{font:inherit;font-size:.95rem;padding:10px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink)}
+input,select{font:inherit;font-size:.95rem;padding:10px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);min-width:0}
 input{flex:1 1 240px}
-input:focus,select:focus,.tile:focus-visible,.chip:focus-visible,a:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+input:focus,select:focus,.tile:focus-visible,.chip:focus-visible,a:focus-visible,.act:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
 .chip{border:2px solid var(--ink);background:transparent;color:var(--ink);padding:6px 15px;border-radius:999px;cursor:pointer;font:600 .8rem var(--head)}
 .chip[aria-pressed=true]{background:var(--ink);color:var(--paper)}
-.count{color:var(--mute);font-size:.85rem;margin:6px 0 14px}
+.chip.soft{border-style:dashed}
+.sep{width:2px;height:22px;background:var(--rule);margin:0 4px}
+.bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+.count{color:var(--mute);font-size:.85rem}
 .grp{font:400 .85rem var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--orange-ink);margin:26px 0 10px}
 /* index cards */
 ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
-li{background:var(--card);border:1px solid var(--rule);border-top:4px double var(--ink);border-radius:3px 3px 8px 8px;padding:13px 15px 12px;display:flex;flex-direction:column;gap:9px;box-shadow:0 1px 0 var(--rule);transition:transform .15s,box-shadow .15s}
+li{background:var(--card);border:1px solid var(--rule);border-top:4px double var(--ink);border-radius:3px 3px 8px 8px;padding:13px 15px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 0 var(--rule);transition:transform .15s,box-shadow .15s;scroll-margin-top:20px}
 li:hover{transform:translateY(-3px);box-shadow:0 8px 0 -4px var(--rule)}
-li .row1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-li a{font:600 1rem/1.3 var(--head);text-decoration:none}
-li a:hover{color:var(--orange-ink);text-decoration:underline;text-decoration-thickness:2px}
-.meta{color:var(--mute);font-size:.78rem;display:flex;flex-wrap:wrap;gap:3px 10px;align-items:center;margin-top:auto}
+li:target{outline:3px solid var(--orange);outline-offset:3px}
+li a.t{font:600 1rem/1.3 var(--head);text-decoration:none}
+li a.t:hover{color:var(--orange-ink);text-decoration:underline;text-decoration-thickness:2px}
+.paper{font-size:.82rem;font-style:italic;color:var(--mute);line-height:1.35}
+.take{font-size:.88rem;line-height:1.45;margin:0;padding-left:10px;border-left:3px solid color-mix(in srgb,var(--k,var(--orange)) 55%,transparent)}
+.meta{color:var(--mute);font-size:.78rem;display:flex;flex-wrap:wrap;gap:3px 10px;align-items:center}
+.acts{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:auto;padding-top:4px;align-items:center}
+.act{font:600 .72rem var(--head);letter-spacing:.04em;color:var(--orange-ink);background:none;border:0;padding:2px 0;cursor:pointer;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+.act.free{color:var(--academia)}
 .pill{display:inline-block;background:var(--blush);color:var(--orange-ink);font:600 .62rem var(--head);letter-spacing:.14em;text-transform:uppercase;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .pill.k-academia{background:color-mix(in srgb,var(--academia) 16%,var(--card));color:var(--academia)}
+.pill.k-reports{background:color-mix(in srgb,var(--reports) 16%,var(--card));color:var(--reports)}
 .pill.k-readable{background:color-mix(in srgb,var(--readable) 16%,var(--card));color:var(--readable)}
 .stars{white-space:nowrap;font-size:.9rem;letter-spacing:1px;color:var(--orange)}
 .stars i{font-style:normal;color:var(--rule)}
+.pick{font:600 .62rem var(--head);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;border:1.5px solid var(--ink);padding:2px 8px;border-radius:3px;transform:rotate(-2deg)}
+.lang{font:600 .6rem var(--head);letter-spacing:.1em;border:1px solid var(--rule);border-radius:3px;padding:0 5px}
 .empty{color:var(--mute);padding:28px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font:600 .8rem var(--head);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.toast.on{opacity:1}
 footer{margin-top:56px;padding-top:18px;border-top:2px dotted var(--rule);color:var(--mute);font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 footer a{color:var(--orange-ink);font-weight:600}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}.card{transform:none!important}}
-@media (max-width:560px){main{padding-top:18px}.top{margin-bottom:30px}}
+@media (max-width:560px){main{padding:18px 16px 72px}.top{margin-bottom:30px}ul,.cards{grid-template-columns:1fr}.sep{display:none}}
 </style>
 </head>
 <body>
 <main>
 <div class="top">
-  <a class="brand" href="https://www.leportee.com" rel="noopener">Le Portee</a>
-  <a class="cta" href="https://www.leportee.com" rel="noopener">Read the newsletter</a>
+  <a class="brand" href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Le Portee</a>
+  <a class="cta" href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Read the newsletter</a>
 </div>
 <p class="kicker">Source Library</p>
 <h1>Everything the Scout found, <mark>rated</mark> and sorted.</h1>
-<p class="sub">Papers, tools and books picked for hoteliers by the <a href="https://www.leportee.com" rel="noopener">Le Portée</a> Scout, rated 1 to 5 stars and grouped by theme. Updated weekly.</p>
+<p class="sub">Research papers, industry reports, tools and books picked for hoteliers by the <a href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Le Portée</a> Scout. Papers come with authors, a free-to-read link where one exists and a citation. Students and lecturers: filter, then download your reading list. Updated weekly.</p>
 
 <section id="nextbox" hidden>
   <h2>Up next</h2>
@@ -101,7 +114,7 @@ footer a{color:var(--orange-ink);font-weight:600}
 <section>
   <h2>The library</h2>
   <div class="ctl">
-    <input id="q" type="search" placeholder="Search titles and publishers" aria-label="Search">
+    <input id="q" type="search" placeholder="Search titles, authors, journals" aria-label="Search">
     <select id="sort" aria-label="Sort">
       <option value="stars">Highest rated</option>
       <option value="theme">Group by theme</option>
@@ -109,82 +122,142 @@ footer a{color:var(--orange-ink);font-weight:600}
       <option value="title">A to Z</option>
     </select>
   </div>
-  <div class="chips" id="kinds" role="group" aria-label="Type"></div>
-  <div class="count" id="count"></div>
+  <div class="chips" id="kinds" role="group" aria-label="Filters"></div>
+  <div class="bar">
+    <div class="count" id="count" aria-live="polite"></div>
+    <button class="act" id="csv" type="button">Download this list (CSV)</button>
+  </div>
   <div id="list"></div>
   <div class="empty" id="empty" hidden>Nothing matches. Try fewer filters.</div>
 </section>
 <footer>
-  <span>Ratings are the Le Portée Scout's. <span id="updated"></span></span>
-  <a href="https://www.leportee.com" rel="noopener">Subscribe to Le Portée</a>
+  <span>Ratings are the Le Portée Scout's; papers marked <b>Editor's pick</b> were chosen by hand. Know a source we missed? Reply to any issue. <span id="updated"></span></span>
+  <a href="https://www.leportee.com/subscribe?utm_source=sources&amp;utm_medium=library" rel="noopener">Subscribe to Le Portée</a>
 </footer>
 </main>
+<div class="toast" id="toast" role="status"></div>
 <script>
-const KINDS={academia:"Academia",tips:"Tips & tools",readable:"Readables"};
-const state={q:"",sort:"stars",kind:new Set(),theme:null};
-let items=[];
+const KINDS={academia:"Academia",reports:"Industry reports",tips:"Tips & tools",readable:"Books"};
+const FLAGS={free:["Free to read",i=>!!i.free_url],issue:["Featured in an issue",i=>i.status==="in an issue"],
+  en:["English",i=>(i.lang||"en")==="en"],de:["Deutsch",i=>i.lang==="de"]};
+const state={q:"",sort:"stars",kind:new Set(),flag:new Set(),theme:null};
+let items=[],shown=[];
 const $=id=>document.getElementById(id);
 const theme=i=>i.theme||"General";
-const byStars=(a,b)=>(b.stars||0)-(a.stars||0)||(b.week||"").localeCompare(a.week||"")||a.title.localeCompare(b.title);
+const slug=s=>s.toLowerCase().replace(/&/g,"and").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const byStars=(a,b)=>((b.pick?5:b.stars||0)-(a.pick?5:a.stars||0))||(b.week||"").localeCompare(a.week||"")||a.title.localeCompare(b.title);
 const kc=i=>"var(--"+(KINDS[i.kind]?i.kind:"tips")+")";
+const utm=(u,c)=>{try{const x=new URL(u);x.searchParams.set("utm_source","sources");x.searchParams.set("utm_medium","library");if(c)x.searchParams.set("utm_content",c);return x.href}catch(e){return u}};
 function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
-function link(i){
-  const a=el("a",null,i.title);
-  if(/^https?:\/\//.test(i.url||"")){a.href=i.url;a.rel="noopener noreferrer";a.target="_blank"}
-  return a;
-}
-function stars(n){
-  const s=el("span","stars");if(!n)return s;
+function ext(a,url){if(/^https?:\/\//.test(url||"")){a.href=url;a.rel="noopener noreferrer";a.target="_blank"}return a}
+function link(i){return ext(el("a","t",i.title),i.url)}
+function stars(i){
+  if(i.pick)return el("span","pick","Editor's pick");
+  const s=el("span","stars"),n=i.stars;if(!n)return s;
   s.setAttribute("aria-label",n+" of 5 stars");s.append("★".repeat(n));
-  const o=el("i",null,"★".repeat(5-n));s.append(o);return s;
+  s.append(el("i",null,"★".repeat(5-n)));return s;
 }
 function kpill(i){return el("span","pill k-"+i.kind,KINDS[i.kind]||i.kind)}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)}
+function copy(text,msg){(navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(()=>toast(msg),()=>{prompt("Copy:",text)})}
+/* citations: APA-ish from what Crossref gave us */
+function apa(i){
+  const au=i.authors||i.journal||i.publisher||"";
+  const t=i.paper_title||i.title;
+  const src=i.journal||i.publisher||"";
+  const link=i.doi?"https://doi.org/"+i.doi:i.url;
+  return [au&&au+".",`(${i.year||"n.d."}).`,t+".",src&&src+".",link].filter(Boolean).join(" ");
+}
+function bibtex(i){
+  const first=(i.authors||"anon").split(",")[0].trim().split(/\s+/).pop().toLowerCase().replace(/[^a-z]/g,"");
+  const f=[["title",i.paper_title||i.title],["author",(i.authors||"").replace(/ et al\.$/,"").split(", ").join(" and ")],
+    ["journal",i.journal||i.publisher],["year",i.year],["doi",i.doi],["url",i.doi?null:i.url]].filter(x=>x[1]);
+  return `@article{${first}${i.year||""},\n`+f.map(([k,v])=>`  ${k} = {${v}}`).join(",\n")+"\n}";
+}
 function meta(i,withTheme){
   const m=el("div","meta");
-  if(withTheme)m.append(el("span",null,theme(i)));
-  if(i.publisher)m.append(el("span",null,i.publisher));
-  if(i.week)m.append(el("span",null,i.week));
+  if(i.kind==="academia"&&(i.authors||i.year)){
+    if(i.authors)m.append(el("span",null,i.authors));
+    if(i.journal)m.append(el("span",null,i.journal));
+    if(i.year)m.append(el("span",null,i.year));
+  }else{
+    if(withTheme)m.append(el("span",null,theme(i)));
+    if(i.publisher)m.append(el("span",null,i.publisher));
+    if(i.week)m.append(el("span",null,i.week));
+  }
+  if(i.lang==="de")m.append(el("span","lang","DE"));
   return m;
+}
+function actions(i){
+  const a=el("div","acts");
+  if(i.free_url&&i.free_url!==i.url)a.append(ext(el("a","act free","Free copy"),i.free_url));
+  else if(i.free_url)a.append(el("span","act free","Free to read"));
+  if(i.issue_url)a.append(ext(el("a","act","Read in the "+(i.week||"").replace(/^\d{4}-W/,"week ")+" issue →"),utm(i.issue_url,"issue-link")));
+  if(i.kind==="academia"){
+    const c=el("button","act","Cite (APA)");c.type="button";c.onclick=()=>copy(apa(i),"Citation copied");
+    const b=el("button","act","BibTeX");b.type="button";b.onclick=()=>copy(bibtex(i),"BibTeX copied");
+    a.append(c,b);
+  }
+  return a;
 }
 function renderNext(){
   const up=items.filter(i=>i.status==="next-issue candidate").sort(byStars).slice(0,6);
   $("nextbox").hidden=!up.length;
   const box=$("next");box.innerHTML="";
   for(const i of up){
-    const c=el("div","card");c.style.setProperty("--k",kc(i));
-    const top=el("div","row1");top.append(kpill(i),stars(i.stars));
-    c.append(top,link(i));
+    const c=el("div","card");
+    const top=el("div","row1");top.append(kpill(i),stars(i));
     const m=el("div","meta");m.append(el("span",null,theme(i)));if(i.publisher)m.append(el("span",null,i.publisher));
-    c.append(m);box.append(c);
+    c.append(top,link(i),m);box.append(c);
   }
 }
 function renderThemes(){
   const counts={};for(const i of items)counts[theme(i)]=(counts[theme(i)]||0)+1;
   const names=Object.keys(counts).sort((a,b)=>counts[b]-counts[a]||a.localeCompare(b));
-    const box=$("themes");box.innerHTML="";
+  const box=$("themes");box.innerHTML="";
   for(const n of names){
-    const b=el("button","tile");b.setAttribute("aria-pressed",state.theme===n);
+    const b=el("button","tile");b.type="button";b.setAttribute("aria-pressed",state.theme===n);
     b.append(el("span",null,n),el("span","n",counts[n]));
     b.onclick=()=>{state.theme=state.theme===n?null:n;renderThemes();render()};
     box.append(b);
   }
 }
+function renderChips(){
+  const box=$("kinds");box.innerHTML="";
+  const chip=(label,on,toggle,soft)=>{const b=el("button","chip"+(soft?" soft":""),label);b.type="button";b.setAttribute("aria-pressed",on);b.onclick=()=>{toggle();renderChips();render()};box.append(b)};
+  const n=k=>items.filter(i=>i.kind===k).length;
+  for(const [k,label] of Object.entries(KINDS))if(n(k))chip(label+" "+n(k),state.kind.has(k),()=>state.kind.has(k)?state.kind.delete(k):state.kind.add(k));
+  box.append(el("span","sep"));
+  for(const [k,[label]] of Object.entries(FLAGS)){
+    if(k==="de"&&!items.some(FLAGS.de[1]))continue;
+    chip(label,state.flag.has(k),()=>{
+      if(state.flag.has(k))state.flag.delete(k);else{state.flag.add(k);if(k==="en")state.flag.delete("de");if(k==="de")state.flag.delete("en")}
+    },true);
+  }
+}
 function row(i){
-  const li=el("li");li.style.setProperty("--k",kc(i));
-  const top=el("div","row1");top.append(kpill(i),stars(i.stars));
-  li.append(top,link(i),meta(i,state.sort!=="theme"));
+  const li=el("li");li.id=i.id;li.style.setProperty("--k",kc(i));
+  const top=el("div","row1");top.append(kpill(i),stars(i));
+  li.append(top,link(i));
+  if(i.paper_title)li.append(el("div","paper",i.paper_title));
+  if(i.takeaway)li.append(el("p","take",i.takeaway));
+  li.append(meta(i,state.sort!=="theme"),actions(i));
   return li;
 }
-function render(){
+function filtered(){
   const q=state.q.toLowerCase();
-  const rows=items.filter(i=>
+  return items.filter(i=>
     (!state.kind.size||state.kind.has(i.kind))&&
+    [...state.flag].every(f=>FLAGS[f][1](i))&&
     (!state.theme||theme(i)===state.theme)&&
-    (!q||(i.title+" "+(i.publisher||"")+" "+theme(i)).toLowerCase().includes(q)));
+    (!q||[i.title,i.paper_title,i.publisher,i.authors,i.journal,theme(i),i.takeaway].join(" ").toLowerCase().includes(q)));
+}
+function render(){
+  const rows=filtered();
   const by={stars:byStars,theme:byStars,
             week:(a,b)=>(b.week||"").localeCompare(a.week||"")||byStars(a,b),
             title:(a,b)=>a.title.localeCompare(b.title)};
-  rows.sort(by[state.sort]);
+  rows.sort(by[state.sort]);shown=rows;
   const box=$("list");box.innerHTML="";
   if(state.sort==="theme"){
     const groups={};for(const i of rows)(groups[theme(i)]=groups[theme(i)]||[]).push(i);
@@ -196,21 +269,59 @@ function render(){
     const ul=el("ul");for(const i of rows)ul.append(row(i));box.append(ul);
   }
   $("count").textContent=rows.length+" of "+items.length+" sources"+(state.theme?" in "+state.theme:"");
-  $("empty").hidden=rows.length>0;
+  $("empty").hidden=rows.length>0;$("csv").hidden=!rows.length;
+  writeHash();
 }
+/* deep links: #type=academia&theme=pricing-and-revenue&free=1&q=... */
+function writeHash(){
+  const p=new URLSearchParams();
+  if(state.kind.size)p.set("type",[...state.kind].join(","));
+  if(state.theme)p.set("theme",slug(state.theme));
+  for(const f of state.flag)p.set(f,"1");
+  if(state.q)p.set("q",state.q);
+  if(state.sort!=="stars")p.set("sort",state.sort);
+  const h=p.toString();
+  if(location.hash.slice(1)!==h&&!special())history.replaceState(null,"",h?"#"+h:location.pathname+location.search);
+}
+const special=()=>/^#(src-|lobby$)/.test(location.hash);
+function readHash(){
+  const h=location.hash.slice(1);if(!h||special())return;
+  const p=new URLSearchParams(h);
+  state.kind=new Set((p.get("type")||"").split(",").filter(k=>KINDS[k]));
+  const t=p.get("theme");state.theme=t?(Object.keys(Object.fromEntries(items.map(i=>[theme(i),1]))).find(n=>slug(n)===t)||null):null;
+  state.flag=new Set(Object.keys(FLAGS).filter(f=>p.get(f)));
+  state.q=p.get("q")||"";$("q").value=state.q;
+  state.sort=p.get("sort")||"stars";$("sort").value=state.sort;
+}
+function csv(){
+  const cols=[["Type",i=>KINDS[i.kind]||i.kind],["Headline",i=>i.title],["Paper title",i=>i.paper_title],["Authors",i=>i.authors],
+    ["Journal / publisher",i=>i.journal||i.publisher],["Year",i=>i.year],["Theme",theme],["Rating",i=>i.pick?"Editor's pick":i.stars?i.stars+"/5":""],
+    ["Takeaway",i=>i.takeaway],["Link",i=>i.doi?"https://doi.org/"+i.doi:i.url],["Free copy",i=>i.free_url],["Le Portée issue",i=>i.issue_url],["Citation (APA)",i=>i.kind==="academia"?apa(i):""]];
+  const q=v=>{v=v==null?"":String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  const body=[cols.map(c=>c[0]).join(","),...shown.map(i=>cols.map(c=>q(c[1](i))).join(","))].join("\r\n");
+  const a=el("a");a.href=URL.createObjectURL(new Blob(["﻿"+body],{type:"text/csv;charset=utf-8"}));
+  a.download="le-portee-reading-list.csv";document.body.append(a);a.click();a.remove();
+}
+/* used by the lobby: clear the filters, then bring one source into view */
+window.libraryReveal=id=>{
+  Object.assign(state,{q:"",theme:null,kind:new Set(),flag:new Set()});$("q").value="";
+  renderChips();renderThemes();render();
+  history.replaceState(null,"","#"+id);
+  const t=document.getElementById(id);if(t)t.scrollIntoView({block:"center"});
+};
 $("q").oninput=e=>{state.q=e.target.value;render()};
 $("sort").onchange=e=>{state.sort=e.target.value;render()};
-(function(){
-  for(const [k,label] of Object.entries(KINDS)){
-    const b=el("button","chip",label);b.setAttribute("aria-pressed","false");
-    b.onclick=()=>{state.kind.has(k)?state.kind.delete(k):state.kind.add(k);b.setAttribute("aria-pressed",state.kind.has(k));render()};
-    $("kinds").append(b);
-  }
-})();
+$("csv").onclick=csv;
+window.addEventListener("hashchange",()=>{if(special())return;readHash();renderChips();renderThemes();render()});
 fetch("sources.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{
-  items=d.items;$("updated").textContent="Last updated "+d.updated+".";
-  renderNext();renderThemes();render();
+  items=d.items.map((i,n)=>Object.assign(i,{id:"src-"+(i.doi?slug(i.doi):slug(i.title).slice(0,60)||n)}));
+  $("updated").textContent="Last updated "+d.updated+".";
+  readHash();renderNext();renderChips();renderThemes();render();
+  if(/^#src-/.test(location.hash)){const t=document.getElementById(location.hash.slice(1));if(t)t.scrollIntoView()}
+  window.libraryItems=items;
+  document.dispatchEvent(new CustomEvent("library:ready",{detail:items}));
 }).catch(()=>{$("count").textContent="Could not load the data.";});
 </script>
+<script src="lobby.js"></script>
 </body>
 </html>
