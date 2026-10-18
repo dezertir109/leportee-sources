@@ -1,6 +1,6 @@
 /* Le Portée at the desk: a lofi pixel lobby driven by sources.json.
-   Small and silent in the corner; click to open it full screen with music.
-   Every key in the cubbies is a source in the library (click one to open it),
+   The lobby is the page; the library list sits beside it as a side panel (below it on phones).
+   Every key in the cubbies is a source in the library (click one to open it in the list),
    the books on the shelf are the Readables, and the Scout walks in with next-issue candidates.
    The other bots work the floor too: the Writer runs drafts to the desk, the Herald hawks this week's issue,
    and faint readers come and go in the armchairs.
@@ -10,57 +10,71 @@
 const W = 480, H = 270;
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// ---------- dom ----------
+// ---------- dom: the lobby is the page, the library slides in as a side panel ----------
+// Built here rather than in index.html so the plain list still works if this script never runs.
 const css = `
-#lobby{position:fixed;right:18px;bottom:18px;z-index:30;width:256px;aspect-ratio:16/9;padding:0;border:2px solid var(--ink,#262422);
-  border-radius:10px;overflow:hidden;background:#120e0d;cursor:zoom-in;box-shadow:4px 4px 0 var(--ink,#262422);transition:transform .15s}
-#lobby:hover{transform:translate(-1px,-1px) rotate(-.6deg)}
-#lobby canvas{width:100%;height:100%;display:block;image-rendering:pixelated}
-#lobby .cap{position:absolute;left:8px;top:7px;font:600 .58rem "Poppins",system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;
-  color:#fff;background:#E2482Ecc;padding:3px 8px;border-radius:999px;pointer-events:none}
-#lobby .x{position:absolute;right:5px;top:4px;width:22px;height:22px;border:0;border-radius:50%;background:#0008;color:#fff;font:14px/22px system-ui;cursor:pointer;padding:0}
-#lobby.inline{position:relative;right:auto;bottom:auto;width:100%;margin:-12px 0 36px}
-#lobby-full{position:fixed;inset:0;z-index:50;background:#0b0908;display:grid;place-items:center}
-#lobby-full[hidden]{display:none}
-#lobby-full canvas{width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;height:auto;image-rendering:pixelated;display:block}
-#lobby-full .hud{position:fixed;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
-  color:#e8dccb;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;opacity:.8;pointer-events:none;text-shadow:0 1px 0 #000}
-#lobby-full .hud b{color:#ff8f79;font-weight:normal}
-#lobby-full .close{position:fixed;right:14px;top:12px;border:1px solid #5a4a40;background:#1a1412;color:#e8dccb;border-radius:999px;
-  font:600 .75rem "Poppins",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;cursor:pointer}
-#lobby-tip{position:fixed;z-index:60;pointer-events:none;max-width:280px;padding:5px 9px;background:#1a1412f2;border:1px solid #5a4a40;color:#f3ead8;
+:root{--side:clamp(360px,36vw,540px)}
+body.lobby-on{background-color:#0b0908}
+#stage{position:fixed;left:0;top:0;bottom:0;right:var(--side);z-index:20;background:#0b0908;display:grid;place-items:center;overflow:hidden;transition:right .25s}
+body.list-closed #stage{right:0}
+#stage canvas{display:block;image-rendering:pixelated}
+body.lobby-on main{position:fixed;top:0;right:0;bottom:0;width:var(--side);max-width:none;margin:0;padding:22px 22px 64px;overflow-y:auto;overscroll-behavior:contain;
+  z-index:21;background:var(--paper);background-image:inherit;border-left:3px solid var(--ink);transition:transform .25s}
+body.lobby-on.list-closed main{transform:translateX(100%)}
+body.lobby-on main .top{margin-bottom:24px}
+body.lobby-on main h1{font-size:2.1rem}
+body.lobby-on main ul,body.lobby-on main .cards{grid-template-columns:1fr}
+body.lobby-on main .tiles{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.sbtn{position:absolute;top:12px;z-index:2;border:1px solid #5a4a40;background:#1a1412e6;color:#e8dccb;border-radius:999px;
+  font:600 .72rem "Poppins",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;cursor:pointer}
+.sbtn:hover{border-color:#E2482E;color:#fff}
+.sbtn:focus-visible{outline:3px solid #E2482E;outline-offset:2px}
+.sbtn.sound{left:14px}.sbtn.list{right:14px}
+#stage .hud{position:absolute;left:14px;bottom:12px;right:14px;display:flex;justify-content:space-between;gap:4px 14px;flex-wrap:wrap;
+  color:#e8dccb;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace;opacity:.82;pointer-events:none;text-shadow:0 1px 0 #000}
+#stage .hud b{color:#ff8f79;font-weight:normal}
+#lobby-tip{position:fixed;z-index:60;pointer-events:none;max-width:300px;padding:5px 9px;background:#1a1412f2;border:1px solid #5a4a40;color:#f3ead8;
   font:12px/1.35 ui-monospace,Menlo,Consolas,monospace;display:none}
-@media (max-width:700px){#lobby:not(.inline){width:168px;right:12px;bottom:12px}}
-@media print{#lobby{display:none}}`;
+@media (max-width:820px){
+  #stage{position:relative;right:auto;width:100%;height:auto;aspect-ratio:16/9}
+  body.lobby-on{background-color:var(--paper)}
+  body.lobby-on main{position:static;width:auto;max-width:980px;margin:0 auto;padding:22px 16px 72px;overflow:visible;border:0;transform:none!important}
+  .sbtn.list,#stage .hud{display:none}
+  .sbtn{top:auto;bottom:8px;padding:5px 11px;font-size:.62rem}.sbtn.sound{left:8px}
+}
+@media print{#stage{display:none}body.lobby-on main{position:static;width:auto;transform:none}}`;
 document.head.append(Object.assign(document.createElement("style"), { textContent: css }));
 
-const mini = document.createElement("button");
-mini.id = "lobby"; mini.type = "button"; mini.setAttribute("aria-label", "Open the Le Portée lobby, a pixel-art scene of the library, full screen");
+const stage = document.createElement("div");
+stage.id = "stage"; stage.setAttribute("role", "region");
+stage.setAttribute("aria-label", "The Le Portée lobby, a pixel-art scene of the library: keys are sources, the gold books are recommended reading");
 const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
-const cap = Object.assign(document.createElement("span"), { className: "cap", textContent: "the lobby ▸" });
-const hide = Object.assign(document.createElement("span"), { className: "x", textContent: "×", title: "Hide the lobby" });
-hide.setAttribute("role", "button"); hide.setAttribute("aria-label", "Hide the lobby");
-mini.append(cv, cap, hide);
-
-const full = document.createElement("div"); full.id = "lobby-full"; full.hidden = true;
-full.setAttribute("role", "dialog"); full.setAttribute("aria-label", "The Le Portée lobby");
-const close = Object.assign(document.createElement("button"), { className: "close", type: "button", textContent: "Back to the library ✕" });
+const soundBtn = Object.assign(document.createElement("button"), { className: "sbtn sound", type: "button" });
+const listBtn = Object.assign(document.createElement("button"), { className: "sbtn list", type: "button" });
+listBtn.setAttribute("aria-controls", "library");
 const hud = Object.assign(document.createElement("div"), { className: "hud" });
-full.append(close, hud);
+stage.append(cv, soundBtn, listBtn, hud);
 const tip = document.createElement("div"); tip.id = "lobby-tip";
-document.body.append(full, tip);
+document.body.prepend(stage); document.body.append(tip);
+document.body.classList.add("lobby-on");
+const mainEl = document.querySelector("main"); if (mainEl) mainEl.id = mainEl.id || "library";
 
-let hidden = false;
-try { hidden = localStorage.getItem("lobby-hidden") === "1"; } catch (e) {}
-const small = matchMedia("(max-width:560px)");
-function place() {
-  if (hidden) { mini.remove(); return; }
-  const sub = document.querySelector(".sub");
-  if (small.matches && sub) { mini.classList.add("inline"); sub.after(mini); }
-  else { mini.classList.remove("inline"); document.body.append(mini); }
+let listClosed = false;
+try { listClosed = localStorage.getItem("lobby-list-closed") === "1"; } catch (e) {}
+function setList(closed) {
+  listClosed = closed; document.body.classList.toggle("list-closed", closed);
+  listBtn.textContent = closed ? "◂ The library" : "Hide the list ▸"; listBtn.setAttribute("aria-expanded", String(!closed));
+  try { localStorage.setItem("lobby-list-closed", closed ? "1" : "0"); } catch (e) {}
 }
-small.addEventListener("change", place);
-place();
+setList(listClosed);
+listBtn.onclick = () => setList(!listClosed);
+
+// keep the canvas a crisp 16:9 inside whatever space the stage has
+function fit() {
+  const r = stage.getBoundingClientRect(), k = Math.min(r.width / W, r.height / H);
+  cv.style.width = Math.floor(W * k) + "px"; cv.style.height = Math.floor(H * k) + "px";
+}
+new ResizeObserver(fit).observe(stage);
 
 const g = cv.getContext("2d");
 
@@ -98,6 +112,10 @@ function text(str, x, y, c, s = 1) {
     x += (w + 1) * s;
   }
 }
+function plate(str, cx, y) {                  // a small brass name plate, centred on cx
+  const w = textW(str) + 6, x = Math.round(cx - w / 2);
+  px(x, y, w, 9, C.goldDk); px(x + 1, y + 1, w - 2, 7, C.gold); text(str, x + 3, y + 2, C.woodDk);
+}
 const textW = (str, s = 1) => [...str.toUpperCase()].reduce((w, ch) => w + ((F[ch] ? F[ch].length / 5 : 2) + 1) * s, -s);
 
 // ---------- palette ----------
@@ -123,7 +141,7 @@ function load(list) {
   hud.innerHTML = "";
   const l = document.createElement("span");
   l.innerHTML = `<b>LE PORTÉE</b> · night shift · ${keys.length} keys in the cubbies · ${fresh.length} new this week · ${visitors.length} waiting at the door`;
-  const r = document.createElement("span"); r.textContent = "click a key, a book or the Herald to open it · M music · Esc close";
+  const r = document.createElement("span"); r.textContent = "keys = sources · gold books = recommended reading · click one to open it · M music · L list";
   hud.append(l, np, r);
 }
 if (window.libraryItems) load(window.libraryItems);
@@ -201,6 +219,7 @@ function drawCubbies(t) {
   const { x, y, cols, rows, s } = CUB;
   px(x - 4, y - 4, cols * s + 8, rows * s + 8, C.woodDk);
   px(x - 3, y - 3, cols * s + 6, rows * s + 6, C.wood);
+  plate("KEYS TO SOURCES", x + cols * s / 2, y - 9);
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
     const cx = x + c * s, cy = y + r * s;
     px(cx, cy, s - 1, s - 1, "#1c120d");
@@ -214,7 +233,7 @@ function drawCubbies(t) {
       const a = REDUCED ? .5 : .35 + .3 * Math.sin(t / 400 + i);
       glow(cx + 3.5, cy + 4, 7, "255,190,90", a);
     }
-    hits.push({ x: cx, y: cy, w: s - 1, h: s - 1, it, label: () => `${it.title}${fresh ? "  · new this week" : ""}` });
+    hits.push({ x: cx, y: cy, w: s - 1, h: s - 1, it, label: () => `Source: ${it.title}${fresh ? "  · new this week" : ""}` });
   }
 }
 
@@ -238,7 +257,8 @@ function drawShelf(t) {
     if (s === 1) for (const b of books) {                                     // the Readables, front and centre
       const bw = 6, bh = 26;
       px(bx, by + sh - 3 - bh, bw, bh, C.readable); px(bx, by + sh - 3 - bh + 4, bw, 2, C.gold); px(bx + 1, by + sh - 3 - bh + 9, bw - 2, 8, "#8a5a1e");
-      hits.push({ x: bx, y: by + sh - 3 - bh, w: bw, h: bh, it: b, label: () => "Book: " + b.title });
+      if (!REDUCED) glow(bx + 3, by + sh - 16, 9, "255,190,90", .18 + .1 * Math.sin(t / 700 + bx));
+      hits.push({ x: bx, y: by + sh - 3 - bh, w: bw, h: bh, it: b, label: () => "Recommended reading: " + b.title });
       bx += bw + 1;
     }
     while (bx < x + w - 6) {
@@ -247,6 +267,7 @@ function drawShelf(t) {
       bx += sp.w + (sp.w > 4 ? 1 : 0);
     }
   }
+  plate("RECOMMENDED", x + w / 2, y + 2 * sh - 5);
   // cat asleep on top of the shelf, tail flicking
   const cx = 384, cy = y - 8;
   px(cx, cy + 2, 12, 5, "#1a1614"); px(cx + 9, cy, 5, 4, "#1a1614"); px(cx + 9, cy - 1, 1, 1, "#1a1614"); px(cx + 13, cy - 1, 1, 1, "#1a1614");
@@ -505,11 +526,10 @@ function drawReaders(t) {
 }
 
 // ---------- frame ----------
-let last = 0, running = false, isFull = false, raf = 0, stillDrawn = false;
+let last = 0, running = false, raf = 0;
 function frame(now) {
   raf = 0;
   const dt = Math.min(now - last, 100);
-  if (!isFull && now - last < 1000 / 15) { schedule(); return; }        // the corner widget runs at 15 fps
   last = now;
   hits = [];
   if (ME.act !== "write" && now > ME.until) ME.act = "write";
@@ -523,7 +543,6 @@ function frame(now) {
   // vignette
   const v = g.createRadialGradient(240, 135, 120, 240, 135, 300);
   v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(0,0,0,.45)"); g.fillStyle = v; g.fillRect(0, 0, W, H);
-  stillDrawn = true;
   schedule();
 }
 function schedule() {
@@ -536,35 +555,21 @@ function setRunning(on) {
   running = on;
   if (on) { raf = 0; schedule(); }
 }
-// The corner widget only animates while it is on screen and the tab is visible.
+// The scene only animates while it is on screen (it scrolls away on phones) and the tab is visible.
 let onScreen = true;
-new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }).observe(mini);
+new IntersectionObserver(es => { onScreen = es[0].isIntersecting; sync(); }).observe(stage);
 document.addEventListener("visibilitychange", sync);
-function sync() { setRunning(!document.hidden && (isFull || (onScreen && !hidden))); if (document.hidden) music.stop(); else if (isFull && music.wanted) music.start(); }
+function sync() { setRunning(!document.hidden && onScreen); if (document.hidden) music.stop(); else if (music.wanted) music.start(); soundLabel(); }
 
-// ---------- open / close ----------
-function openFull() {
-  isFull = true; full.hidden = false; full.prepend(cv); document.body.style.overflow = "hidden";
-  music.wanted = true; music.start(); close.focus(); sync();
-  if (location.hash !== "#lobby") history.pushState(null, "", "#lobby");
-}
-function closeFull(back = true) {
-  if (!isFull) return;
-  isFull = false; full.hidden = true; mini.prepend(cv); document.body.style.overflow = ""; tip.style.display = "none";
-  music.wanted = false; music.stop(); sync();
-  if (back && location.hash === "#lobby") history.back();
-}
-mini.addEventListener("click", e => {
-  if (e.target === hide) { e.stopPropagation(); hidden = true; try { localStorage.setItem("lobby-hidden", "1"); } catch (_) {} mini.remove(); sync(); return; }
-  openFull();
-});
-close.onclick = () => closeFull();
+// ---------- sound: browsers only allow it after a click ----------
+function soundLabel() { soundBtn.textContent = music.on ? "♪ Music off" : "♪ Play the lobby music"; soundBtn.setAttribute("aria-pressed", String(music.on)); }
+function toggleSound() { music.wanted = !music.on; music.wanted ? music.start() : music.stop(); soundLabel(); }
+soundBtn.onclick = toggleSound;
 addEventListener("keydown", e => {
-  if (!isFull) return;
-  if (e.key === "Escape") closeFull();
-  if (e.key === "m" || e.key === "M") { music.wanted = !music.on; music.wanted ? music.start() : music.stop(); }
+  if (/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName) || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === "m" || e.key === "M") toggleSound();
+  if (e.key === "l" || e.key === "L") setList(!listClosed);
 });
-addEventListener("popstate", () => { if (location.hash === "#lobby") { if (!isFull) openFull(); } else closeFull(false); });
 
 // ---------- hover + click on things in the scene ----------
 function at(e) {
@@ -572,26 +577,27 @@ function at(e) {
   return hits.find(h => x >= h.x - 1 && x <= h.x + h.w + 1 && y >= h.y - 1 && y <= h.y + h.h + 1);
 }
 cv.addEventListener("mousemove", e => {
-  if (!isFull) return;
   const h = at(e);
   cv.style.cursor = h && h.it ? "pointer" : "default";
   if (!h) { tip.style.display = "none"; return; }
   tip.textContent = h.label(); tip.style.display = "block";
-  tip.style.left = Math.min(e.clientX + 14, innerWidth - 300) + "px"; tip.style.top = (e.clientY + 16) + "px";
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - 320) + "px"; tip.style.top = (e.clientY + 16) + "px";
 });
 cv.addEventListener("mouseleave", () => tip.style.display = "none");
 cv.addEventListener("click", e => {
-  if (!isFull) return;
   const h = at(e); if (!h || !h.it) return;
-  e.stopPropagation(); closeFull(false);
+  tip.style.display = "none";
+  if (listClosed) setList(false);
   if (window.libraryReveal) window.libraryReveal(h.it.id);
+  const card = document.getElementById(h.it.id);                              // flash the card the key belongs to
+  if (card && card.animate) card.animate([{ boxShadow: "0 0 0 5px #E2482E" }, { boxShadow: "0 0 0 0 #E2482E00" }], { duration: 2400, easing: "ease-out" });
 });
 
 // ---------- music: hotel-lobby lofi, composed live in the browser ----------
 // No samples and no AI model (the same call Lofi Cities makes): rule-based jazz harmony with rootless voicings and
 // smooth voice leading, an FM electric piano, a plucked upright-ish bass, brushed drums with swing and loose timing,
 // a vibraphone motif, then a tape stage (soft saturation, wow and flutter, a tone that opens in the intro), a generated
-// plate reverb, vinyl, rain, distant lobby chatter and the odd lift chime, tuned to the track's key.
+// plate reverb, vinyl, a little rain and the odd lift chime, tuned to the track's key.
 const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
 const VOICE = { maj9: [4, 7, 11, 14], "69": [4, 7, 9, 14], m9: [3, 7, 10, 14], "13": [4, 9, 10, 14], "7b9": [4, 7, 10, 13], m7b5: [3, 6, 10, 12] };
 // one entry per bar: [semitones above the key, quality]; two chords split the bar
@@ -665,7 +671,7 @@ const music = {
     this.bassBus = bus(1, .03, 0);
     this.drums = bus(.85, .12, 0, .12);
     this.lead = bus(.8, .5, .3, .22);
-    this.chime = bus(.7, .9, .15, -.3);
+    this.chime = bus(.7, .45, 0, -.3);
     // noise: white for drums and chatter, brown-ish for rain
     this.white = ac.createBuffer(1, sr * 2, sr);
     const wd = this.white.getChannelData(0); for (let i = 0; i < wd.length; i++) wd[i] = Math.random() * 2 - 1;
@@ -681,16 +687,7 @@ const music = {
       n.connect(gn); gn.connect(glue); s.start(0, Math.random() * 2); return gn;
     };
     bed(vin, [["highpass", 1100]], .06);
-    const rain = bed(this.white, [["lowpass", 1800], ["highpass", 450]], .014); this.lfo(.05, .005, rain.gain);
-    const chatter = ac.createGain(), clp = ac.createBiquadFilter(); clp.type = "lowpass"; clp.frequency.value = 1600;
-    chatter.connect(clp); clp.connect(glue); const cs = ac.createGain(); cs.gain.value = .7; clp.connect(cs); cs.connect(this.rev);
-    this.voices = [.5, .35, .25].map((lvl, i) => {
-      const src = ac.createBufferSource(), f1 = ac.createBiquadFilter(), f2 = ac.createBiquadFilter(), amp = ac.createGain();
-      src.buffer = this.white; src.loop = true; f1.type = f2.type = "bandpass"; f1.Q.value = 5; f2.Q.value = 7; amp.gain.value = 0;
-      src.connect(f1); src.connect(f2); f1.connect(amp); f2.connect(amp); pan(amp, [-.6, .5, -.1][i]).connect(chatter);
-      src.start(0, Math.random() * 2);
-      return { f1, f2, amp, lvl, talk: 0, next: Math.random() * 6 };
-    });
+    bed(this.white, [["highpass", 2500], ["lowpass", 7000]], .006);
     this.liftAt = 0;
     this.newTrack();
     this.next = ac.currentTime + .15;
@@ -825,10 +822,10 @@ const music = {
     mod.connect(mi); mi.connect(car.frequency); car.connect(amp); amp.connect(this.lead);
     for (const o of [car, mod]) { o.start(t); o.stop(t + 3.5); }
   },
-  bell(m, t, v) {                              // struck bell, inharmonic 1:3.5, for the desk bell and the lift
+  bell(m, t, v) {                              // a clean chime (harmonic 1:2) for the desk bell and the lift
     const ac = this.ctx, f = mtof(m), car = ac.createOscillator(), mod = ac.createOscillator(), mi = ac.createGain(), amp = ac.createGain();
-    car.frequency.value = f; mod.frequency.value = f * 3.5;
-    mi.gain.setValueAtTime(f * 1.6, t); mi.gain.exponentialRampToValueAtTime(f * .1, t + 1.5);
+    car.frequency.value = f; mod.frequency.value = f * 2;
+    mi.gain.setValueAtTime(f * .8, t); mi.gain.exponentialRampToValueAtTime(f * .05, t + .8);
     amp.gain.setValueAtTime(0, t); amp.gain.linearRampToValueAtTime(v, t + .003); amp.gain.setTargetAtTime(0, t + .01, .9);
     mod.connect(mi); mi.connect(car.frequency); car.connect(amp); amp.connect(this.chime);
     for (const o of [car, mod]) { o.start(t); o.stop(t + 5); }
@@ -861,29 +858,17 @@ const music = {
       if (this.liftAt) { this.bell(76 + p.key, now + .05, .05); this.bell(72 + p.key, now + .6, .05); }
       this.liftAt = now + 70 + Math.random() * 90;
     }
-    for (const v of this.voices) {             // distant chatter: noise "syllables" through moving formants
-      if (now < v.next) continue;
-      if (v.talk <= 0) { v.talk = 4 + Math.floor(Math.random() * 14); v.next = now + 3 + Math.random() * 9; continue; }
-      const len = .07 + Math.random() * .16, t = now + .05;
-      v.f1.frequency.setTargetAtTime(350 + Math.random() * 500, t, .03);
-      v.f2.frequency.setTargetAtTime(1000 + Math.random() * 1400, t, .03);
-      v.amp.gain.setTargetAtTime(v.lvl * (.4 + Math.random() * .6), t, .025); v.amp.gain.setTargetAtTime(0, t + len, .05);
-      v.next = now + len + .04 + Math.random() * .12; v.talk--;
-    }
   },
 };
 // one-shot effects, only when the scene is open with sound, in the key of whatever is playing
 function sfx(kind) {
-  if (!isFull || !music.on) return;
+  if (!music.on) return;
   const t = music.ctx.currentTime;
   if (kind === "bell") music.bell(84 + music.p.key, t, .08);
   if (kind === "stamp") { music.kick(t, .5); music.noise(t, "lowpass", 900, .7, .25, .001, .03, music.drums); }
 }
 
 // ---------- go ----------
-if (location.hash === "#lobby") { // deep link: open straight away (music waits for a click, browsers require one)
-  isFull = true; full.hidden = false; full.prepend(cv); document.body.style.overflow = "hidden"; music.wanted = true;
-  full.addEventListener("click", () => music.start(), { once: true });
-}
+fit();
 sync();
 })();
