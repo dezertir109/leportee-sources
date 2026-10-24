@@ -128,6 +128,8 @@ const C = {
 
 // ---------- data ----------
 let items = [], keys = [], books = [], visitors = [], fresh = [], latest = "";
+let issue = null;                                                            // the latest issue, from issue.json
+const PAPER = { newspaper: true };                                           // what the newsstand and the Herald hand you
 const np = document.createElement("span");                                    // now playing, filled in by the music
 function load(list) {
   items = list || [];
@@ -141,7 +143,7 @@ function load(list) {
   hud.innerHTML = "";
   const l = document.createElement("span");
   l.innerHTML = `<b>LE PORTÉE</b> · night shift · ${keys.length} keys in the cubbies · ${fresh.length} new this week · ${visitors.length} waiting at the door`;
-  const r = document.createElement("span"); r.textContent = "keys = sources · gold books = recommended reading · click one to open it · M music · L list";
+  const r = document.createElement("span"); r.textContent = "keys = sources · gold books = recommended reading · newsstand = the new issue · M music · L list";
   hud.append(l, np, r);
 }
 if (window.libraryItems) load(window.libraryItems);
@@ -166,7 +168,8 @@ function drawRoom(t) {
   px(0, 0, W, 8, C.woodDk); px(0, 8, W, 2, C.rail);                           // cornice
   px(0, 150, W, 50, C.wains); px(0, 150, W, 3, C.rail);
   for (let x = 6; x < W; x += 40) { px(x, 158, 32, 36, "#251a17"); px(x + 1, 159, 30, 34, C.wains); }
-  for (let y = 200, r = 0; y < H; y += 10, r++)                               // tiled floor
+  px(0, 200, W, H - 200, "#0f0c0b");                                         // tiled floor: dark grout first, so nothing
+  for (let y = 200, r = 0; y < H; y += 10, r++)                               // that moves over it leaves a trail
     for (let x = -(r % 2) * 10; x < W; x += 20) px(x, y, 10, 10, (x / 10 + r) % 2 ? C.floorA : C.floorB);
   px(150, 214, 190, 56, "#5a1f17"); px(154, 218, 182, 48, "#7a2a1d");        // runner rug
   for (let x = 160; x < 330; x += 12) px(x, 240, 6, 2, C.goldDk);
@@ -302,6 +305,19 @@ function drawDoor(t, open) {
   text("IN", x + 14, y - 14, C.gold);
 }
 
+function drawStand(t) {                        // a wire newsstand with a JUST OUT bill, next to the door
+  if (!issue) return;
+  const x = 404, y = 190;
+  px(x + 1, y + 16, 1, 20, C.goldDk); px(x + 24, y + 16, 1, 20, C.goldDk);   // legs
+  for (const ty of [y + 24, y + 33]) {                                      // two trays of folded papers
+    px(x + 2, ty - 3, 22, 3, "#e6dcc4"); px(x + 3, ty - 2, 20, 1, "#b3a68b"); px(x + 1, ty, 24, 1, C.goldDk);
+  }
+  px(x, y, 26, 17, C.ink); px(x + 1, y + 1, 24, 15, C.paper);                // the bill board
+  text("JUST", x + 6, y + 2, C.orange); text("OUT!", x + 6, y + 9, C.ink);
+  if (!REDUCED) glow(x + 13, y + 9, 20, "255,200,120", .1 + .06 * Math.sin(t / 600));
+  hits.push({ x, y, w: 26, h: 36, it: PAPER, label: () => `Just out: ${issue.headline} (click to read)` });
+}
+
 function drawLamp(t) {
   const x = 168;
   px(x, 152, 12, 3, C.ink); px(x + 5, 138, 2, 14, C.ink); px(x + 2, 134, 8, 2, C.ink);
@@ -421,7 +437,7 @@ const SPRITES = {
 const LABELS = {
   scout: w => "The Scout, with a next-issue candidate: " + w.it.title,
   writer: () => "The Writer, running drafts for the next issue to the desk",
-  herald: w => "The Herald, calling out this week's issue: " + w.it.title,
+  herald: w => w.it.newspaper ? "The Herald, calling out the new issue: " + issue.headline : "The Herald, calling out this week's issue: " + w.it.title,
 };
 
 function walker(who, from, to, lane, speed, stay, it) {
@@ -450,8 +466,8 @@ function updateCast(t, dt) {
   if (!REDUCED) {
     if (!atDoor() && t > due.scout && visitors.length)
       cast.scout = walker("scout", DOOR + 14, 300, 236, .028, 3600, visitors[visitIx++ % visitors.length]);
-    else if (!atDoor() && t > due.herald && fresh.length)
-      cast.herald = walker("herald", DOOR + 14, 372, 250, .03, 6500, fresh[heraldIx++ % fresh.length]);
+    else if (!atDoor() && t > due.herald && (issue || fresh.length))
+      cast.herald = walker("herald", DOOR + 14, 372, 250, .03, 6500, issue ? PAPER : fresh[heraldIx++ % fresh.length]);
     if (!cast.writer && t > due.writer) cast.writer = walker("writer", -14, 194, 226, .05, 2600, null);
   }
   for (const k in cast) if (cast[k] && !stepWalker(cast[k], t, dt)) { cast[k] = null; due[k] = t + GAP[k][0] + Math.random() * GAP[k][1]; }
@@ -467,7 +483,7 @@ function drawCast(t) {
     g.fillStyle = "#0006"; g.fillRect(x - 2, y - 1, 14, 2);                     // a soft shadow under the feet
     SPRITES[w.who](P, w, t);
     if (w.who === "herald" && w.phase === "stay") {                           // the call, in a speech bubble
-      const s = Math.floor(t / 1600) % 2 ? "EXTRA!" : "NEW ISSUE", bw = textW(s) + 6, bx = clamp(Math.round(x + 5 - bw / 2), 4, W - bw - 4), by = y - 40;
+      const s = Math.floor(t / 1600) % 2 ? "EXTRA!" : issue ? "JUST OUT!" : "NEW ISSUE", bw = textW(s) + 6, bx = clamp(Math.round(x + 5 - bw / 2), 4, W - bw - 4), by = y - 40;
       px(bx, by, bw, 9, C.paper); px(bx, by + 9, bw, 1, "#b8ab90"); px(x + 4, by + 9, 2, 2, C.paper);
       text(s, bx + 3, by + 2, C.ink);
     }
@@ -538,7 +554,7 @@ function frame(now) {
   const open = updateCast(now, dt);
   updateReaders(now, dt);
   drawRoom(now); drawWindow(now, hour); drawCart(); drawDoor(now, open); drawSign(now);
-  drawCubbies(now); drawClock(date); drawShelf(now); drawPendant(now);
+  drawCubbies(now); drawClock(date); drawShelf(now); drawStand(now); drawPendant(now);
   drawPortee(now); drawDesk(now); drawLamp(now); drawPlant(); drawCast(now); drawReaders(now);
   // vignette
   const v = g.createRadialGradient(240, 135, 120, 240, 135, 300);
@@ -587,11 +603,95 @@ cv.addEventListener("mouseleave", () => tip.style.display = "none");
 cv.addEventListener("click", e => {
   const h = at(e); if (!h || !h.it) return;
   tip.style.display = "none";
+  if (h.it.newspaper) { openPaper(); return; }
   if (listClosed) setList(false);
   if (window.libraryReveal) window.libraryReveal(h.it.id);
   const card = document.getElementById(h.it.id);                              // flash the card the key belongs to
   if (card && card.animate) card.animate([{ boxShadow: "0 0 0 5px #E2482E" }, { boxShadow: "0 0 0 0 #E2482E00" }], { duration: 2400, easing: "ease-out" });
 });
+
+// ---------- the newspaper: the latest issue, just out ----------
+// issue.json is written by the Editor bot (lp_lib/library.py) every Monday and the moment an issue goes live.
+document.head.append(Object.assign(document.createElement("style"), { textContent: `
+@font-face{font-family:"UnifrakturMaguntia";src:url(fonts/UnifrakturMaguntia-Book.ttf) format("truetype");font-display:swap}
+.sbtn.paperb{left:14px;top:52px}
+#paper{position:fixed;inset:0;z-index:70;background:#0b0908d9;overflow-y:auto;padding:5vh 14px;display:flex;justify-content:center;align-items:flex-start}
+#paper[hidden]{display:none}
+.np{position:relative;width:100%;max-width:840px;margin:auto 0;padding:20px 30px 24px;color:#1c1a17;transform:rotate(-.4deg);
+  font:16px/1.5 Georgia,"Times New Roman",serif;box-shadow:0 30px 70px #000b,0 1px 0 #cfc4aa;
+  background:#f1ead9 linear-gradient(90deg,transparent 49.7%,#00000012 50%,transparent 50.3%);
+  background-image:linear-gradient(90deg,transparent 49.7%,#00000012 50%,transparent 50.3%),radial-gradient(ellipse at 25% 15%,#ffffff70,transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 .3  0 0 0 0 .25  0 0 0 0 .15  0 0 0 .09 0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>")}
+.np-x{position:absolute;right:-6px;top:-38px;border:1px solid #5a4a40;background:#1a1412;color:#e8dccb;border-radius:999px;width:32px;height:32px;cursor:pointer;font:15px/1 system-ui}
+.np-ears{display:flex;justify-content:space-between;gap:10px}
+.np-ears span{border:1px solid #1c1a17;padding:5px 9px;font-size:10.5px;line-height:1.3;letter-spacing:.14em;text-transform:uppercase;text-align:center;max-width:170px}
+.np-mast{font:400 clamp(46px,9.5vw,96px)/1 "UnifrakturMaguntia",Georgia,serif;text-align:center;margin:-34px 0 8px;letter-spacing:.01em}
+.np-date{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 14px;border-top:3px double #1c1a17;border-bottom:1px solid #1c1a17;
+  padding:5px 2px;margin-bottom:12px;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.np-stamp{position:absolute;right:30px;top:84px;transform:rotate(8deg);color:#bf2f1b;border:4px double #bf2f1b;padding:7px 12px 6px;
+  font:400 21px/1 "Archivo Black",Impact,sans-serif;letter-spacing:.12em;text-transform:uppercase;opacity:.86;mix-blend-mode:multiply;pointer-events:none}
+.np-head{font:700 clamp(26px,4.6vw,46px)/1.06 Georgia,"Times New Roman",serif;text-align:center;margin:30px 0 8px;letter-spacing:-.015em;text-wrap:balance}
+.np-by{text-align:center;font-style:italic;font-size:13px;margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #1c1a17}
+.np-top{display:grid;grid-template-columns:1fr 1.15fr;gap:20px;padding-bottom:14px;border-bottom:1px solid #1c1a17}
+.np-top figure{margin:0;position:relative;align-self:start}
+.np-top img{display:block;width:100%;border:1px solid #1c1a17;filter:grayscale(1) contrast(1.15) sepia(.18) brightness(1.03)}
+.np-top figure::after{content:"";position:absolute;left:0;right:0;top:0;bottom:22px;pointer-events:none;mix-blend-mode:multiply;
+  background:radial-gradient(#00000030 32%,transparent 34%) 0 0/3px 3px}
+.np-top figcaption{font-size:12px;font-style:italic;margin-top:5px}
+.np-lede p{margin:0;text-align:justify;hyphens:auto}
+.np-lede p::first-letter{float:left;font:700 58px/.8 Georgia,serif;padding:7px 7px 0 0}
+.np-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:14px}
+.np-cols article{padding:0 12px;border-left:1px solid #1c1a1766}
+.np-cols article:first-child{padding-left:0;border-left:0}
+.np-kick{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#bf2f1b}
+.np-cols h3{font:700 18px/1.15 Georgia,serif;margin:4px 0 6px}
+.np-cols p{margin:0;font-size:13.5px;line-height:1.45;text-align:justify;hyphens:auto}
+.np-notice{margin-top:16px;padding:10px 13px;border:1px solid #1c1a17;background:#e9e0c9;font-size:13.5px;font-style:italic}
+.np-notice b{font-style:normal;letter-spacing:.06em;text-transform:uppercase;font-size:11.5px}
+.np-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:10px;border-top:3px double #1c1a17;font-size:13px}
+.np-read{background:#1c1a17;color:#f1ead9;padding:10px 16px;text-decoration:none;font:600 12.5px "Poppins",system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+.np-read:hover{background:#bf2f1b}
+.np-read:focus-visible,.np-x:focus-visible{outline:3px solid #E2482E;outline-offset:2px}
+@media (max-width:820px){.sbtn.paperb{left:auto;right:8px;top:auto;bottom:8px}}
+@media (max-width:640px){.np{padding:16px 16px 20px;transform:none}.np-top{grid-template-columns:1fr}.np-ears span{font-size:9px}
+  .np-mast{margin-top:6px}.np-stamp{top:118px;right:12px;font-size:14px}.np-head{margin-top:22px}}
+` }));
+const paper = document.createElement("div"); paper.id = "paper"; paper.hidden = true;
+paper.setAttribute("role", "dialog"); paper.setAttribute("aria-modal", "true"); paper.setAttribute("aria-label", "The latest Le Portée issue");
+const paperBtn = Object.assign(document.createElement("button"), { className: "sbtn paperb", type: "button", textContent: "Just out ▸" });
+paperBtn.hidden = true;
+stage.append(paperBtn); document.body.append(paper);
+const heading = (e, level) => { e.setAttribute("role", "heading"); e.setAttribute("aria-level", String(level)); return e; };
+const E = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+function buildPaper() {
+  const i = issue, wk = (i.week || "").replace(/^\d{4}-W0?/, ""), yr = (i.week || "").slice(0, 4);
+  const justOut = i.published && Date.now() - Date.parse(i.published) < 8 * 864e5;
+  const np = E("article", "np"), x = E("button", "np-x", "✕");
+  x.type = "button"; x.setAttribute("aria-label", "Close the newspaper"); x.onclick = closePaper;
+  const ears = E("div", "np-ears"); ears.append(E("span", null, `Week ${wk}, ${yr}`), E("span", null, "Free to read"));
+  const date = E("div", "np-date"); date.append(E("span", null, i.date), E("span", null, "Hotel news, weekly"), E("span", null, "sources.leportee.com"));
+  np.append(x, ears, heading(E("div", "np-mast", "Le Portée"), 1), date, E("div", "np-stamp", justOut ? "Just out" : "Latest issue"),
+    heading(E("div", "np-head", i.headline), 2), E("p", "np-by", "Written by a machine, moderated by a human"));
+  const top = E("div", "np-top");
+  if (i.image) { const f = E("figure"), img = E("img"); img.src = i.image; img.alt = "This week's cover"; f.append(img, E("figcaption", null, "This week's cover.")); top.append(f); }
+  const lede = E("div", "np-lede"); lede.append(E("p", null, i.tldr)); top.append(lede); np.append(top);
+  const cols = E("div", "np-cols");
+  for (const s of i.stories || []) { const a = E("article"); a.append(E("div", "np-kick", s.section), E("h3", null, s.title), E("p", null, s.text)); cols.append(a); }
+  np.append(cols);
+  if (i.notice) { const n = E("aside", "np-notice"); n.append(E("b", null, "Notice from the machine. "), i.notice); np.append(n); }
+  const foot = E("div", "np-foot"), read = E("a", "np-read", "Read the whole issue →");
+  read.href = i.url; read.target = "_blank"; read.rel = "noopener";
+  foot.append(E("span", null, "Every story and every link, in this week's Le Portée."), read); np.append(foot);
+  paper.replaceChildren(np);
+  return x;
+}
+function openPaper() { if (!issue) return; const x = buildPaper(); paper.hidden = false; tip.style.display = "none"; document.body.style.overflow = "hidden"; x.focus(); }
+function closePaper() { if (paper.hidden) return; paper.hidden = true; document.body.style.overflow = ""; paperBtn.focus(); }
+paper.addEventListener("click", e => { if (e.target === paper) closePaper(); });
+addEventListener("keydown", e => { if (e.key === "Escape") closePaper(); });
+paperBtn.onclick = openPaper;
+fetch("issue.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null)
+  .then(d => { if (d && d.headline) { issue = d; paperBtn.hidden = false; } }).catch(() => {});
 
 // ---------- music: hotel-lobby lofi, composed live in the browser ----------
 // No samples and no AI model (the same call Lofi Cities makes): rule-based jazz harmony with rootless voicings and
