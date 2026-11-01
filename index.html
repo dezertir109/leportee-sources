@@ -25,6 +25,7 @@ a{color:inherit}
 .brand{font:600 .95rem var(--head);letter-spacing:.42em;text-transform:uppercase;text-decoration:none;color:var(--orange-ink)}
 .cta{font:600 .72rem var(--head);letter-spacing:.14em;text-transform:uppercase;background:var(--orange);color:var(--on-orange);padding:9px 18px;border-radius:999px;text-decoration:none;transition:transform .15s}
 .cta:hover{transform:rotate(-2deg) scale(1.04)}
+.ctas{display:flex;gap:8px;flex-wrap:wrap}.cta.ghost{background:transparent;color:var(--orange);box-shadow:inset 0 0 0 2px var(--orange)}
 .kicker{font:600 .72rem var(--head);letter-spacing:.3em;text-transform:uppercase;color:var(--mute);margin:0 0 14px}
 h1{font:400 clamp(2.1rem,6.2vw,4rem)/1.04 var(--display);margin:0 0 20px;letter-spacing:-.01em;max-width:16ch}
 h1 mark{background:var(--blush);color:var(--orange-ink);padding:0 .18em;border-radius:.16em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -95,7 +96,8 @@ footer a{color:var(--orange-ink);font-weight:600}
 <main>
 <div class="top">
   <a class="brand" href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Le Portee</a>
-  <a class="cta" href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Read the newsletter</a>
+  <span class="ctas"><a class="cta ghost" href="https://t.me/+ehj1nQK_g4JmZTli" rel="noopener">Telegram</a>
+  <a class="cta" href="https://www.leportee.com/?utm_source=sources&amp;utm_medium=library" rel="noopener">Read the newsletter</a></span>
 </div>
 <p class="kicker">Source Library</p>
 <h1>Everything the Scout found, <mark>rated</mark> and sorted.</h1>
