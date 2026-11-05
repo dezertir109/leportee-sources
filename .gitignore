@@ -1,0 +1,7 @@
+
+# Secrets: never commit (security check 2026-11-05)
+.env
+.env.*
+!.env.example
+!.env.sample
+.dev.vars
