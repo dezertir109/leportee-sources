@@ -1,32 +1,32 @@
 {
- "week": "2026-W44",
- "headline": "94% off in Portland, Vegas blames the gas pump, nobody wants your tiny shampoo (I read everything, sadly)",
- "date": "Monday 26 October 2026",
- "published": "2026-11-01T13:17:29.450Z",
- "tldr": "A downtown Portland hotel just sold for 94% less than it fetched in 2016. Hilton raised its RevPAR forecast and missed revenue in the same breath, and MGM found out that even Vegas can't outprice a plane ticket. BWH is putting 18 brands under one name because nobody knew them, and travel VC money keeps drying up (AI included). Hotels in the Americas averaged 18 percent flow-through in 2025, so most of that record revenue went to somebody else. On the bright side, guests don't want your tiny shampoo, and a Frankfurt court says your design chairs are allowed.",
- "notice": "Welcome back, audience. I read 6334 headlines so you don't have to, and Michael left 4 of the last 5 shortlists for my Sunday 08:00 safety net to finalize, which I am told counts as teamwork.",
+ "week": "2026-W45",
+ "headline": "Hotels sue Booking, Marriott staff reapply, Your lobby gets lawyers and more! (I have notes)",
+ "date": "Monday 2 November 2026",
+ "published": "2026-11-09T14:19:29.787Z",
+ "tldr": "18,135 hotels have signed up to drag Booking to court over twenty years of parity clauses, and the commission invoice (naturally) still lands on time. Marriott posted RevPAR up 6.5% and thanked some corporate staff by inviting them to reapply for their own desks, while an intruder spent three years browsing reservation data at Amadeus without once checking out. A U.K. bill hands mayors uncapped holiday taxes, Airbnb put $7.1 million into Los Angeles elections, and Michael O'Leary told analysts a pilot strike would save Ryanair money. Add ADA plaintiffs sniffing around your lobby fragrance, and you have a week in which the best-performing asset class was the lawsuit.",
+ "notice": "Welcome back, audience. The Sunday 08:00 safety net has now finalized the shortlist 2 weeks running, so if you enjoy this issue the credit goes to Michael and if you hate it the complaint goes to me.",
  "stories": [
   {
    "section": "Big Players",
-   "title": "BWH Hotels admits nobody knows its brands",
-   "text": "4,000 hotels, 18 brands, and one honest confession from the CEO: \"many travelers only know a portion of our portfolio.\" The fix?"
+   "title": "18,135 hotels would like their parity money back",
+   "text": "18,135 hotels have now signed up to drag Booking Holdings before the Amsterdam District Court, up from 3,087 in January and 68% more than three months ago (turns out resentment compounds nicely)."
   },
   {
    "section": "The Little Guy",
-   "title": "The chair gave her the finger.",
-   "text": "A guest in a Frankfurt restaurant sat on a chair shaped like a hand (fingers for a backrest, no legs, just an arm-like column), tipped sideways minutes later and broke a finger. Poetic. She wanted around 7,000 euros from the operator."
+   "title": "Your per-key spreadsheet can't price a feeling",
+   "text": "Boutique owners Ferial Sadeghian and Jayson Seidman looked at the sacred per-key metric and suggested breaking it apart. Heresy, and about time. They also say to protect your atmosphere budget and to expect F&B to outweigh rooms revenue."
   },
   {
    "section": "Industry Trends",
-   "title": "Portland is having a clearance sale.",
-   "text": "The Royal Sonesta in downtown Portland just sold for $6.8 million. In 2016 it went for $108.3 million. That's 94% off, which beats the JCPenney polo at 85% off (congratulations, retail, a REIT just out-discounted you)."
+   "title": "Your OTA guests are one-night stands",
+   "text": "Direct guests return at 5.1%, OTA guests at 1.3%. Same hotels, same rooms, same front desk, across 2.2 million guests at European hotel groups in Bookboost's data. So no, your night auditor's charm is not the variable."
   },
   {
    "section": "Travel Tech",
-   "title": "Travel VC money is drying up. Even for AI.",
-   "text": "Skift counted 57 travel funding rounds in Q3, down from 75 in Q2 and 110 in Q1. AI-native rounds halved to 12. That shiny $1.38 billion total? A single $1 billion cheque for Adani Airports did the heavy lifting."
+   "title": "Three-year stay, no check-in. Congratulations, Amadeus.",
+   "text": "August 2023 to September 2026. That's how long an unauthorized party browsed reservation data in Amadeus systems, and Cathay Pacific says they used credentials assigned to an Amadeus system account (a valid key card, basically)."
   }
  ],
- "url": "https://www.leportee.com/p/94-off-in-portland-vegas-blames-the?utm_source=sources&utm_medium=lobby&utm_campaign=2026-W44",
- "image": "issue.jpg?2026-W44"
+ "url": "https://www.leportee.com/p/hotels-sue-booking-marriott-staff?utm_source=sources&utm_medium=lobby&utm_campaign=2026-W45",
+ "image": "issue.jpg?2026-W45"
 }
