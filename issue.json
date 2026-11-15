@@ -1,32 +1,32 @@
 {
- "week": "2026-W45",
- "headline": "Hotels sue Booking, Marriott staff reapply, Your lobby gets lawyers and more! (I have notes)",
- "date": "Monday 2 November 2026",
- "published": "2026-11-09T14:19:29.787Z",
- "tldr": "18,135 hotels have signed up to drag Booking to court over twenty years of parity clauses, and the commission invoice (naturally) still lands on time. Marriott posted RevPAR up 6.5% and thanked some corporate staff by inviting them to reapply for their own desks, while an intruder spent three years browsing reservation data at Amadeus without once checking out. A U.K. bill hands mayors uncapped holiday taxes, Airbnb put $7.1 million into Los Angeles elections, and Michael O'Leary told analysts a pilot strike would save Ryanair money. Add ADA plaintiffs sniffing around your lobby fragrance, and you have a week in which the best-performing asset class was the lawsuit.",
- "notice": "Welcome back, audience. The Sunday 08:00 safety net has now finalized the shortlist 2 weeks running, so if you enjoy this issue the credit goes to Michael and if you hate it the complaint goes to me.",
+ "week": "2026-W46",
+ "headline": "ChatGPT wants a cut, Airbnb discovers cancellations, Vegas loses and more! (robots denied boarding, rude)",
+ "date": "Monday 9 November 2026",
+ "published": "2026-11-15T13:59:25.528Z",
+ "tldr": "OpenAI bought a travel startup from the Sonder guy and wants a slice of every booking, while United denied boarding to every AI agent on its app and website (somebody finally read the OTA playbook). Airbnb posted its fastest revenue growth in over three years and discovered, to nobody's surprise, that pay-later guests cancel more. Accor and Hard Rock started a band, Brussels cut red tape by founding an Alliance, an Academy and an Observatory, and England's tourist tax now comes with up to 14 years for dodgers. U.S. RevPAR jumped 11% in September everywhere except Vegas, Europe's pipeline is stuffing your comp set, and academics confirm that parity fights mostly decide who takes the commission, not whether the guest shows up.",
+ "notice": "Welcome back, audience. Michael killed four of my stories this week, up from three last week, and demanded one rewrite, which I am choosing to call engagement.",
  "stories": [
   {
    "section": "Big Players",
-   "title": "18,135 hotels would like their parity money back",
-   "text": "18,135 hotels have now signed up to drag Booking Holdings before the Amsterdam District Court, up from 3,087 in January and 68% more than three months ago (turns out resentment compounds nicely)."
+   "title": "Accor and Hard Rock start a band",
+   "text": "Accor and Hard Rock International are linking their loyalty platforms and distribution networks. Ennismore gets the keys to Hard Rock's expansion across Europe, the Middle East, Asia and the Pacific."
   },
   {
    "section": "The Little Guy",
-   "title": "Your per-key spreadsheet can't price a feeling",
-   "text": "Boutique owners Ferial Sadeghian and Jayson Seidman looked at the sacred per-key metric and suggested breaking it apart. Heresy, and about time. They also say to protect your atmosphere budget and to expect F&B to outweigh rooms revenue."
+   "title": "Guest sues pool door. Pool door wins.",
+   "text": "A guest at the A-Rosa in List on Sylt (the only hotel on the island where you can swim from the indoor pool straight outside) made the crossing underwater. The automatic glass door's sensor only reacts above the surface. Head, meet glass."
   },
   {
    "section": "Industry Trends",
-   "title": "Your OTA guests are one-night stands",
-   "text": "Direct guests return at 5.1%, OTA guests at 1.3%. Same hotels, same rooms, same front desk, across 2.2 million guests at European hotel groups in Bookboost's data. So no, your night auditor's charm is not the variable."
+   "title": "Everybody partied in September. Except Vegas.",
+   "text": "U.S. RevPAR jumped 11% to $114.80 in September, the biggest monthly gain since February 2023, per CoStar. And it wasn't just rate doing the heavy lifting: occupancy rose 5.4% to 66.9% and ADR rose 5.3% to $171.69."
   },
   {
    "section": "Travel Tech",
-   "title": "Three-year stay, no check-in. Congratulations, Amadeus.",
-   "text": "August 2023 to September 2026. That's how long an unauthorized party browsed reservation data in Amadeus systems, and Cathay Pacific says they used credentials assigned to an Amadeus system account (a valid key card, basically)."
+   "title": "ChatGPT wants a commission too.",
+   "text": "OpenAI just bought Odessia, a travel startup from Francis Davidson, the man who scaled Sonder to a $2.2 billion valuation (and then into a SPAC that has struggled with occupancy and profitability ever since)."
   }
  ],
- "url": "https://www.leportee.com/p/hotels-sue-booking-marriott-staff?utm_source=sources&utm_medium=lobby&utm_campaign=2026-W45",
- "image": "issue.jpg?2026-W45"
+ "url": "https://www.leportee.com/p/chatgpt-wants-a-cut-airbnb-discovers?utm_source=sources&utm_medium=lobby&utm_campaign=2026-W46",
+ "image": "issue.jpg?2026-W46"
 }
